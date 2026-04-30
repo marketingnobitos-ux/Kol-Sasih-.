@@ -171,7 +171,7 @@ function onBrandChange() {
 }
 
 async function loadDashboard() {
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') {
     showDemoData();
     return;
   }
@@ -378,7 +378,7 @@ window.onload = () => {
   const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   document.getElementById('selDari').value = bulan[Math.max(0, m-2)];
   document.getElementById('selSampai').value = bulan[m];
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') showDemoData();
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') showDemoData();
 };
 </script>
 </body>

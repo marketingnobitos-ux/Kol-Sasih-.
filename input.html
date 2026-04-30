@@ -236,7 +236,7 @@ async function loadKOLList(brand, cabang) {
   selKOL.innerHTML = '<option value="">— Pilih KOL —</option>';
   kolProfiles = {};
 
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') return;
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') return;
   try {
     const r = await fetch(`${APPS_SCRIPT_URL}?action=getKOLList&brand=${encodeURIComponent(brand)}&cabang=${encodeURIComponent(cabang)}`);
     const d = await r.json();
@@ -250,7 +250,7 @@ async function loadKOLList(brand, cabang) {
 async function loadCampaigns(brand, cabang) {
   const sel = document.getElementById('selCampaign');
   sel.innerHTML = '<option value="">— Pilih Campaign —</option>';
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') return;
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') return;
   try {
     const r = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&brand=${encodeURIComponent(brand)}&cabang=${encodeURIComponent(cabang)}`);
     const d = await r.json();
@@ -329,7 +329,7 @@ async function submitData() {
   // Tampilkan kalkulasi lokal dulu
   showLocalResult(data);
 
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') {
     showToast('✅ Data dihitung (belum tersimpan — setup Apps Script dulu)');
     return;
   }

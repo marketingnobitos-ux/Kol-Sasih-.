@@ -293,7 +293,7 @@ async function loadConfig() {
   const cabang = document.getElementById('selCabang').value;
   if (!brand || !cabang) return;
 
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') {
     loadDefaultConfig(brand, cabang);
     document.getElementById('formArea').classList.add('active');
     return;
@@ -461,7 +461,7 @@ async function saveConfig() {
   const config = collectConfig();
   currentConfig = config;
 
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
+  if (APPS_SCRIPT_URL === 'DEMO_MODE_DISABLED') {
     showToast('⚠️ Apps Script URL belum diisi. Lihat README untuk setup.');
     return;
   }
