@@ -251,7 +251,7 @@
 // ============================================================
 // GANTI URL INI DENGAN URL APPS SCRIPT ANDA
 // ============================================================
-const APPS_SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec';
 const PASSWORD        = 'sasih2024'; // Harus sama dengan ADMIN_PASSWORD di Apps Script
 
 const BRANDS = {
@@ -293,7 +293,7 @@ async function loadConfig() {
   const cabang = document.getElementById('selCabang').value;
   if (!brand || !cabang) return;
 
-  if (APPS_SCRIPT_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
     loadDefaultConfig(brand, cabang);
     document.getElementById('formArea').classList.add('active');
     return;
@@ -461,7 +461,7 @@ async function saveConfig() {
   const config = collectConfig();
   currentConfig = config;
 
-  if (APPS_SCRIPT_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
     showToast('⚠️ Apps Script URL belum diisi. Lihat README untuk setup.');
     return;
   }

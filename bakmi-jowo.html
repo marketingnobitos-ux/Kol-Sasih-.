@@ -98,7 +98,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APPS_SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec';
 const BRAND = 'Bakmi Jowo';
 const CABANG = 'Kartini';
 
@@ -115,7 +115,7 @@ const defaultConfig = {
 };
 
 window.onload = async () => {
-  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
     try {
       const r = await fetch(`${APPS_SCRIPT_URL}?action=getBriefConfig&brand=${encodeURIComponent(BRAND)}&cabang=${encodeURIComponent(CABANG)}`);
       const d = await r.json();
@@ -149,7 +149,7 @@ async function submitForm() {
   };
   const btn = document.getElementById('btnSubmit');
   btn.disabled=true; btn.textContent='⏳ Memproses...';
-  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
     try { await fetch(APPS_SCRIPT_URL, { method:'POST', body:JSON.stringify({ action:'saveKOL', ...submittedData }) }); }
     catch(e){}
   }

@@ -137,7 +137,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APPS_SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec';
 const BRAND = 'Pecel Lele Aminoto';
 
 let briefConfig = null;
@@ -154,7 +154,7 @@ async function onCabangChange() {
   const cabang = document.getElementById('selCabang').value;
   if (!cabang) return;
 
-  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
     try {
       const r = await fetch(`${APPS_SCRIPT_URL}?action=getBriefConfig&brand=${encodeURIComponent(BRAND)}&cabang=${encodeURIComponent(cabang)}`);
       const d = await r.json();
@@ -202,7 +202,7 @@ async function submitForm() {
   btn.disabled = true; btn.textContent = '⏳ Memproses...';
 
   // Save ke Apps Script
-  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz_yv0Ja1kpPXAu__fqm55DfhhPnSWgj0ZTzM78I1NIn7sAK7JiQ-eQKjtohHZo9-k/exec') {
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
