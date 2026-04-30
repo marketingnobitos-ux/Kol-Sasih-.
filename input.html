@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Input Data Bulanan — Sasih</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0b1a13;--surface:#122010;--border:#1e3828;--gold:#c9a84c;--gold-lt:#e8cc7a;--text:#e8e4dc;--muted:#7a8c80; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .topbar { background:var(--surface);border-bottom:1px solid var(--border);padding:0.9rem 1.2rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:10; }
+  .topbar-title { font-family:'Playfair Display',serif;color:var(--gold);font-size:1.2rem; }
+  .topbar a { color:var(--muted);text-decoration:none;font-size:0.8rem;margin-left:auto; }
+  .container { max-width:640px;margin:0 auto;padding:1.2rem; }
+  .section { background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:1rem; }
+  .section-title { font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--gold);margin-bottom:1rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border); }
+  .field { margin-bottom:0.9rem; }
+  .field label { display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.35rem; }
+  .row2 { display:grid;grid-template-columns:1fr 1fr;gap:0.7rem; }
+  .row3 { display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem; }
+  select, input[type=text], input[type=number], input[type=date], input[type=url] {
+    background:#0f1f18;border:1px solid var(--border);color:var(--text);
+    border-radius:8px;padding:0.55rem 0.8rem;font-family:'DM Sans',sans-serif;font-size:0.88rem;
+    width:100%;outline:none;transition:border 0.2s;
+  }
+  select:focus, input:focus { border-color:var(--gold); }
+  select { appearance:none;cursor:pointer; }
+  .auto-field {
+    background:#0a1a10;border:1px solid var(--border);color:var(--muted);
+    border-radius:8px;padding:0.55rem 0.8rem;font-size:0.88rem;width:100%;
+    font-style:italic;
+  }
+  .platform-toggle { display:flex;gap:0.5rem; }
+  .ptog { flex:1;padding:0.6rem;border:1px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-size:0.85rem;transition:all 0.2s;background:transparent;color:var(--muted); }
+  .ptog.active { border-color:var(--gold);background:rgba(201,168,76,0.1);color:var(--gold); }
+  .btn { display:flex;align-items:center;gap:0.5rem;justify-content:center;border:none;border-radius:8px;padding:0.8rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s;width:100%; }
+  .btn-primary { background:var(--gold);color:#0b1a13; }
+  .btn-primary:hover { background:var(--gold-lt); }
+  .btn-primary:disabled { opacity:0.5;cursor:not-allowed; }
+
+  /* PROFIL KOL CARD */
+  .kol-card { background:#0a1a10;border:1px solid var(--border);border-radius:10px;padding:1rem;margin-top:0.5rem;display:none; }
+  .kol-card.show { display:block; }
+  .kol-row { display:flex;gap:0.8rem;align-items:center;margin-bottom:0.5rem;font-size:0.82rem; }
+  .kol-row:last-child { margin-bottom:0; }
+  .kol-row span { color:var(--muted);width:90px;flex-shrink:0; }
+
+  /* TOTAL AUTO */
+  .total-display { background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:0.7rem 0.9rem;display:flex;justify-content:space-between;align-items:center; }
+  .total-display .label { font-size:0.8rem;color:var(--muted); }
+  .total-display .value { font-size:1.1rem;font-weight:600;color:var(--gold); }
+
+  /* HASIL KALKULASI */
+  .result-box { display:none;background:#0a1a10;border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-top:1rem; }
+  .result-box.show { display:block; }
+  .result-grid { display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-top:0.8rem; }
+  .metric-chip { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.7rem;text-align:center; }
+  .metric-chip .m-label { font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem; }
+  .metric-chip .m-value { font-size:1.1rem;font-weight:600; }
+  .metric-chip .m-status { font-size:0.8rem;margin-top:0.2rem; }
+
+  .toast { position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a3c2e;border:1px solid var(--gold);color:var(--text);padding:0.8rem 1.5rem;border-radius:10px;font-size:0.85rem;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999; }
+  .toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">📊 Input Data Bulanan</div>
+  <a href="index.html">← Kembali</a>
+</div>
+
+<div class="container">
+
+  <!-- IDENTIFIKASI -->
+  <div class="section">
+    <div class="section-title">Identifikasi</div>
+    <div class="row3">
+      <div class="field">
+        <label>Brand</label>
+        <select id="selBrand" onchange="onBrandChange()">
+          <option value="">— Brand —</option>
+          <option value="Pecel Lele Aminoto">Pecel Lele Aminoto</option>
+          <option value="Bolu Sunyaragi">Bolu Sunyaragi</option>
+          <option value="Bakmi Jowo">Bakmi Jowo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cabang</label>
+        <select id="selCabang" onchange="onCabangChange()">
+          <option value="">— Cabang —</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Bulan</label>
+        <select id="selBulan">
+          <option value="">— Bulan —</option>
+          <option>Januari</option><option>Februari</option><option>Maret</option>
+          <option>April</option><option>Mei</option><option>Juni</option>
+          <option>Juli</option><option>Agustus</option><option>September</option>
+          <option>Oktober</option><option>November</option><option>Desember</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Nama KOL</label>
+      <select id="selKOL" onchange="onKOLChange()">
+        <option value="">— Pilih atau ketik nama KOL —</option>
+      </select>
+    </div>
+
+    <!-- Auto-fill profil -->
+    <div class="kol-card" id="kolCard">
+      <div style="font-size:0.72rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.6rem">PROFIL KOL (AUTO)</div>
+      <div class="kol-row"><span>No. WA</span> <strong id="dispWA">—</strong></div>
+      <div class="kol-row"><span>IG</span> <strong id="dispIG">—</strong></div>
+      <div class="kol-row"><span>TikTok</span> <strong id="dispTT">—</strong></div>
+    </div>
+  </div>
+
+  <!-- KONTEN -->
+  <div class="section">
+    <div class="section-title">Detail Konten</div>
+    <div class="row2">
+      <div class="field">
+        <label>Platform</label>
+        <div class="platform-toggle">
+          <button class="ptog active" id="togIG" onclick="setPlatform('IG')">📸 Instagram</button>
+          <button class="ptog" id="togTT" onclick="setPlatform('TikTok')">🎵 TikTok</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Campaign</label>
+        <select id="selCampaign">
+          <option value="">— Pilih Campaign —</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Link Konten (URL posting)</label><input type="url" id="fLinkKonten" placeholder="https://instagram.com/reel/..."></div>
+    <div class="row2">
+      <div class="field"><label>Tanggal Upload</label><input type="date" id="fTglUpload"></div>
+      <div class="field">
+        <label>Tanggal Visit (Auto)</label>
+        <div class="auto-field" id="dispTglVisit">—</div>
+      </div>
+    </div>
+    <div class="field"><label>Catatan</label><input type="text" id="fCatatan" placeholder="Catatan tambahan..."></div>
+  </div>
+
+  <!-- BIAYA -->
+  <div class="section">
+    <div class="section-title">Biaya</div>
+    <div class="row2">
+      <div class="field"><label>Paid (Rp)</label><input type="number" id="fPaid" placeholder="0" min="0" oninput="calcTotal()"></div>
+      <div class="field"><label>Barter / Nilai Makan (Rp)</label><input type="number" id="fBarter" placeholder="0" min="0" oninput="calcTotal()"></div>
+    </div>
+    <div class="total-display">
+      <span class="label">Total Cost</span>
+      <span class="value" id="dispTotal">Rp 0</span>
+    </div>
+  </div>
+
+  <!-- METRIK -->
+  <div class="section">
+    <div class="section-title">Metrik Konten</div>
+    <div class="row2">
+      <div class="field"><label>Impressions</label><input type="number" id="fImpressions" placeholder="0" min="0"></div>
+      <div class="field"><label>Reach</label><input type="number" id="fReach" placeholder="0" min="0"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Views / Play</label><input type="number" id="fViews" placeholder="0" min="0"></div>
+      <div class="field"><label>Likes</label><input type="number" id="fLikes" placeholder="0" min="0"></div>
+    </div>
+    <div class="row3">
+      <div class="field"><label>Comments</label><input type="number" id="fComments" placeholder="0" min="0"></div>
+      <div class="field"><label>Saves</label><input type="number" id="fSaves" placeholder="0" min="0"></div>
+      <div class="field"><label>Shares</label><input type="number" id="fShares" placeholder="0" min="0"></div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" id="btnSubmit" onclick="submitData()">💾 Simpan Data</button>
+
+  <!-- HASIL -->
+  <div class="result-box" id="resultBox">
+    <div style="font-size:0.72rem;color:var(--gold);letter-spacing:0.1em">KALKULASI OTOMATIS</div>
+    <div class="result-grid" id="resultGrid"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const APPS_SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+
+const BRANDS = {
+  'Pecel Lele Aminoto': ['AMS','AMC','AMG'],
+  'Bolu Sunyaragi'    : ['Kartini','Kemlaka'],
+  'Bakmi Jowo'        : ['Kartini']
+};
+
+let currentPlatform = 'IG';
+let kolProfiles = {};
+let today = '';
+
+window.onload = () => {
+  const d = new Date();
+  today = d.toISOString().split('T')[0];
+  document.getElementById('dispTglVisit').textContent = d.toLocaleDateString('id-ID', {day:'2-digit',month:'long',year:'numeric'});
+};
+
+function onBrandChange() {
+  const brand  = document.getElementById('selBrand').value;
+  const selCab = document.getElementById('selCabang');
+  selCab.innerHTML = '<option value="">— Cabang —</option>';
+  if (!brand) return;
+  (BRANDS[brand] || []).forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.textContent = c; selCab.appendChild(o);
+  });
+  resetKOL();
+}
+
+async function onCabangChange() {
+  const brand  = document.getElementById('selBrand').value;
+  const cabang = document.getElementById('selCabang').value;
+  resetKOL();
+  if (!brand || !cabang) return;
+  await loadKOLList(brand, cabang);
+  await loadCampaigns(brand, cabang);
+}
+
+async function loadKOLList(brand, cabang) {
+  const selKOL = document.getElementById('selKOL');
+  selKOL.innerHTML = '<option value="">— Pilih KOL —</option>';
+  kolProfiles = {};
+
+  if (APPS_SCRIPT_URL === 'PASTE_APPS_SCRIPT_URL_HERE') return;
+  try {
+    const r = await fetch(`${APPS_SCRIPT_URL}?action=getKOLList&brand=${encodeURIComponent(brand)}&cabang=${encodeURIComponent(cabang)}`);
+    const d = await r.json();
+    (d.kols || []).forEach(k => {
+      kolProfiles[k.nama] = k;
+      const o = document.createElement('option'); o.value = k.nama; o.textContent = k.nama; selKOL.appendChild(o);
+    });
+  } catch(e) {}
+}
+
+async function loadCampaigns(brand, cabang) {
+  const sel = document.getElementById('selCampaign');
+  sel.innerHTML = '<option value="">— Pilih Campaign —</option>';
+  if (APPS_SCRIPT_URL === 'PASTE_APPS_SCRIPT_URL_HERE') return;
+  try {
+    const r = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&brand=${encodeURIComponent(brand)}&cabang=${encodeURIComponent(cabang)}`);
+    const d = await r.json();
+    (d.campaigns || []).forEach(c => {
+      const o = document.createElement('option'); o.value = c.tema; o.textContent = `${c.bulan} — ${c.tema}`; sel.appendChild(o);
+    });
+  } catch(e) {}
+}
+
+function onKOLChange() {
+  const nama = document.getElementById('selKOL').value;
+  const card = document.getElementById('kolCard');
+  if (!nama || !kolProfiles[nama]) { card.classList.remove('show'); return; }
+  const k = kolProfiles[nama];
+  document.getElementById('dispWA').textContent = k.noWA || '—';
+  document.getElementById('dispIG').textContent = k.usernameIG || '—';
+  document.getElementById('dispTT').textContent = k.usernameTT || '—';
+  card.classList.add('show');
+}
+
+function resetKOL() {
+  document.getElementById('selKOL').innerHTML = '<option value="">— Pilih KOL —</option>';
+  document.getElementById('kolCard').classList.remove('show');
+  document.getElementById('selCampaign').innerHTML = '<option value="">— Pilih Campaign —</option>';
+}
+
+function setPlatform(p) {
+  currentPlatform = p;
+  document.getElementById('togIG').classList.toggle('active', p === 'IG');
+  document.getElementById('togTT').classList.toggle('active', p === 'TikTok');
+}
+
+function calcTotal() {
+  const paid   = parseFloat(document.getElementById('fPaid').value) || 0;
+  const barter = parseFloat(document.getElementById('fBarter').value) || 0;
+  document.getElementById('dispTotal').textContent = 'Rp ' + (paid + barter).toLocaleString('id-ID');
+}
+
+async function submitData() {
+  // VALIDASI
+  const brand  = document.getElementById('selBrand').value;
+  const cabang = document.getElementById('selCabang').value;
+  const bulan  = document.getElementById('selBulan').value;
+  const namaKOL= document.getElementById('selKOL').value;
+  const reach  = parseFloat(document.getElementById('fReach').value) || 0;
+
+  if (!brand || !cabang || !bulan || !namaKOL) { showToast('⚠️ Lengkapi Brand, Cabang, Bulan & KOL'); return; }
+  if (reach === 0) { showToast('⚠️ Reach tidak boleh 0'); return; }
+
+  const kp = kolProfiles[namaKOL] || {};
+  const data = {
+    action: 'saveMonthlyData',
+    brand, cabang, bulan, namaKOL,
+    noWA      : kp.noWA || '',
+    usernameIG: kp.usernameIG || '',
+    linkIG    : kp.linkIG || '',
+    usernameTT: kp.usernameTT || '',
+    linkTT    : kp.linkTT || '',
+    platform  : currentPlatform,
+    campaign  : document.getElementById('selCampaign').value,
+    linkKonten: document.getElementById('fLinkKonten').value,
+    tanggalUpload: document.getElementById('fTglUpload').value,
+    tanggalVisit : today,
+    paid       : document.getElementById('fPaid').value || 0,
+    barter     : document.getElementById('fBarter').value || 0,
+    impressions: document.getElementById('fImpressions').value || 0,
+    reach      : reach,
+    views      : document.getElementById('fViews').value || 0,
+    likes      : document.getElementById('fLikes').value || 0,
+    comments   : document.getElementById('fComments').value || 0,
+    saves      : document.getElementById('fSaves').value || 0,
+    shares     : document.getElementById('fShares').value || 0,
+    catatan    : document.getElementById('fCatatan').value
+  };
+
+  // Tampilkan kalkulasi lokal dulu
+  showLocalResult(data);
+
+  if (APPS_SCRIPT_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+    showToast('✅ Data dihitung (belum tersimpan — setup Apps Script dulu)');
+    return;
+  }
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = '⏳ Menyimpan...';
+
+  try {
+    const r = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST', body: JSON.stringify(data)
+    });
+    const d = await r.json();
+    if (d.status === 'ok') {
+      showToast('✅ Data berhasil disimpan!');
+      showServerResult(d.metrics);
+    } else { showToast('❌ ' + d.message); }
+  } catch(e) { showToast('✅ Tersimpan (periksa koneksi internet)'); }
+
+  btn.disabled = false; btn.textContent = '💾 Simpan Data';
+}
+
+function showLocalResult(data) {
+  const likes = +data.likes, comments = +data.comments, saves = +data.saves, shares = +data.shares;
+  const reach = +data.reach, impressions = +data.impressions, views = +data.views;
+  const totalCost = (+data.paid) + (+data.barter);
+  const totalEng = likes + comments + saves + shares;
+  const er  = reach > 0 ? (totalEng / reach * 100).toFixed(2) : 0;
+  const cpm = impressions > 0 ? (totalCost / impressions * 1000).toFixed(0) : 0;
+  const cpv = views > 0 ? (totalCost / views).toFixed(0) : 0;
+  const cpe = totalEng > 0 ? (totalCost / totalEng).toFixed(0) : 0;
+
+  const bm = data.platform === 'TikTok'
+    ? { ER:{g:6,ok:3}, CPM:{g:5000,ok:15000}, CPV:{g:30,ok:80}, CPE:{g:200,ok:500} }
+    : { ER:{g:4,ok:2}, CPM:{g:10000,ok:20000}, CPV:null, CPE:{g:300,ok:800} };
+
+  const st = (v, g, ok, hi) => hi ? (v>=g?'🟢':v>=ok?'🟡':'🔴') : (v<=g?'🟢':v<=ok?'🟡':'🔴');
+
+  const metrics = [
+    { label:'ER', value: er + '%', status: st(+er, bm.ER.g, bm.ER.ok, true) },
+    { label:'CPM', value: 'Rp '+fmtNum(cpm), status: st(+cpm, bm.CPM.g, bm.CPM.ok, false) },
+    { label:'CPV', value: 'Rp '+fmtNum(cpv), status: bm.CPV ? st(+cpv, bm.CPV.g, bm.CPV.ok, false) : 'N/A' },
+    { label:'CPE', value: 'Rp '+fmtNum(cpe), status: st(+cpe, bm.CPE.g, bm.CPE.ok, false) }
+  ];
+
+  const grid = document.getElementById('resultGrid');
+  grid.innerHTML = metrics.map(m => `
+    <div class="metric-chip">
+      <div class="m-label">${m.label}</div>
+      <div class="m-value">${m.value}</div>
+      <div class="m-status">${m.status}</div>
+    </div>`).join('');
+  document.getElementById('resultBox').classList.add('show');
+}
+
+function showServerResult(m) {
+  if (!m) return;
+}
+
+function fmtNum(n) { return Number(n).toLocaleString('id-ID'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

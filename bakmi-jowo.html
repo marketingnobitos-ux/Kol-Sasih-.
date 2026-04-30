@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form KOL — Bakmi Jowo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --utama:#1a4731; --aksen:#F0C040; --bg:#051210; --surface:#081c17; --border:#112b22; --text:#e8f5ee; --muted:#6a9a7a; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .hero { background:linear-gradient(135deg, var(--utama) 0%, #0d2e1e 100%); padding:2rem 1.5rem; text-align:center; }
+  .hero-brand { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--aksen); margin-bottom:0.2rem; }
+  .hero-sub { font-size:0.78rem; color:rgba(255,255,255,0.7); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:1rem; }
+  .hero-desc { font-size:0.88rem; color:rgba(255,255,255,0.85); line-height:1.6; max-width:340px; margin:0 auto; }
+  .container { max-width:520px; margin:0 auto; padding:1.2rem; }
+  .section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.2rem; margin-bottom:1rem; }
+  .section-title { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--aksen); margin-bottom:0.9rem; padding-bottom:0.4rem; border-bottom:1px solid var(--border); }
+  .cabang-badge { display:inline-block; background:rgba(240,192,64,0.15); border:1px solid var(--aksen); color:var(--aksen); border-radius:8px; padding:0.5rem 1rem; font-size:0.88rem; font-weight:500; }
+  .field { margin-bottom:0.9rem; }
+  .field label { display:block; font-size:0.78rem; color:var(--muted); margin-bottom:0.35rem; }
+  input[type=text], input[type=tel], input[type=date], input[type=url] {
+    background:#040e0b; border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:0.6rem 0.9rem; font-family:'DM Sans',sans-serif; font-size:0.9rem; width:100%; outline:none; transition:border 0.2s;
+  }
+  input:focus { border-color:var(--aksen); }
+  .btn { display:flex; align-items:center; gap:0.5rem; justify-content:center; border:none; border-radius:10px; padding:0.9rem 1.4rem; font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.2s; width:100%; }
+  .btn-submit { background:var(--utama); color:#fff; border:2px solid var(--aksen); }
+  .btn-submit:hover { background:#215a3e; }
+  .btn-submit:disabled { opacity:0.5; cursor:not-allowed; }
+  .btn-pdf { background:var(--aksen); color:#051210; margin-top:0.7rem; }
+  .success-box { display:none; background:rgba(26,71,49,0.3); border:1px solid var(--aksen); border-radius:12px; padding:1.5rem; text-align:center; margin-top:1rem; }
+  .success-box.show { display:block; }
+  .success-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+  .success-title { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--aksen); margin-bottom:0.5rem; }
+  .success-desc { font-size:0.85rem; color:var(--muted); line-height:1.6; }
+  .toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid var(--aksen); color:var(--text); padding:0.8rem 1.5rem; border-radius:10px; font-size:0.85rem; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:999; }
+  .toast.show { opacity:1; }
+  .required::after { content:' *'; color:var(--aksen); }
+  .err { border-color:#e57373 !important; }
+  .err-msg { font-size:0.72rem; color:#e57373; margin-top:0.2rem; display:none; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-brand">Bakmi Jowo</div>
+  <div class="hero-sub">Form Kerjasama KOL</div>
+  <div class="hero-desc">Halo! Terima kasih telah bergabung bersama kami. Lengkapi data di bawah untuk mendapatkan brief kerjasama.</div>
+</div>
+
+<div class="container">
+  <div id="formWrapper">
+    <div class="section">
+      <div class="section-title">Cabang</div>
+      <div class="cabang-badge">📍 Kartini</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Data Diri</div>
+      <div class="field">
+        <label class="required">Nama Lengkap</label>
+        <input type="text" id="fNama" placeholder="Nama lengkap Anda...">
+        <div class="err-msg" id="errNama">Nama wajib diisi</div>
+      </div>
+      <div class="field">
+        <label class="required">No. WhatsApp</label>
+        <input type="tel" id="fWA" placeholder="08xx-xxxx-xxxx">
+        <div class="err-msg" id="errWA">No. WA wajib diisi</div>
+      </div>
+      <div class="field">
+        <label class="required">Tanggal Kunjungan ke Outlet</label>
+        <input type="date" id="fTglVisit">
+        <div class="err-msg" id="errTgl">Tanggal kunjungan wajib diisi</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Akun Sosial Media</div>
+      <div class="field"><label>Username Instagram</label><input type="text" id="fUsernameIG" placeholder="@username_anda"></div>
+      <div class="field"><label>Link Profil Instagram</label><input type="url" id="fLinkIG" placeholder="https://instagram.com/username"></div>
+      <div class="field"><label>Username TikTok</label><input type="text" id="fUsernameTT" placeholder="@username_tiktok"></div>
+      <div class="field"><label>Link Profil TikTok</label><input type="url" id="fLinkTT" placeholder="https://tiktok.com/@username"></div>
+    </div>
+
+    <button class="btn btn-submit" id="btnSubmit" onclick="submitForm()">✨ Submit & Download Brief</button>
+  </div>
+
+  <div class="success-box" id="successBox">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Pendaftaran Berhasil!</div>
+    <div class="success-desc" id="successDesc">Data Anda telah kami terima.</div>
+    <button class="btn btn-pdf" onclick="downloadPDF()">📄 Download Brief PDF</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const APPS_SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+const BRAND = 'Bakmi Jowo';
+const CABANG = 'Kartini';
+
+let briefConfig = null;
+let submittedData = null;
+
+const defaultConfig = {
+  warnaUtama:'#1a4731', warnaAksen:'#F0C040', warnaBackground:'#f0fff8',
+  paragrafUtama:'Bakmi Jowo hadir dengan cita rasa autentik bakmi jawa yang dimasak menggunakan anglo berbahan bakar arang, menghasilkan aroma dan rasa yang khas dan tak terlupakan.',
+  dos:['Tampilkan proses memasak yang unik','Ceritakan cita rasa autentik','Tag akun official kami'],
+  donts:['Jangan bandingkan dengan kompetitor','Jangan gunakan musik berlisensi','Posting sesuai kesepakatan'],
+  catatanFormat:'Format konten bebas sesuai gaya kreator. Tonjolkan keunikan proses memasak tradisional.',
+  logo:'', deadline:''
+};
+
+window.onload = async () => {
+  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+    try {
+      const r = await fetch(`${APPS_SCRIPT_URL}?action=getBriefConfig&brand=${encodeURIComponent(BRAND)}&cabang=${encodeURIComponent(CABANG)}`);
+      const d = await r.json();
+      briefConfig = d.config || defaultConfig;
+    } catch(e) { briefConfig = defaultConfig; }
+  } else { briefConfig = defaultConfig; }
+};
+
+function validate() {
+  let ok = true;
+  [['fNama','errNama'],['fWA','errWA'],['fTglVisit','errTgl']].forEach(([id,errId]) => {
+    const el = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!el.value) { el.classList.add('err'); err.style.display='block'; ok=false; }
+    else { el.classList.remove('err'); err.style.display='none'; }
+  });
+  return ok;
+}
+
+async function submitForm() {
+  if (!validate()) return;
+  submittedData = {
+    brand:BRAND, cabang:CABANG,
+    namaKOL: document.getElementById('fNama').value,
+    noWA: document.getElementById('fWA').value,
+    usernameIG: document.getElementById('fUsernameIG').value,
+    linkIG: document.getElementById('fLinkIG').value,
+    usernameTT: document.getElementById('fUsernameTT').value,
+    linkTT: document.getElementById('fLinkTT').value,
+    tanggalVisit: document.getElementById('fTglVisit').value
+  };
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled=true; btn.textContent='⏳ Memproses...';
+  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+    try { await fetch(APPS_SCRIPT_URL, { method:'POST', body:JSON.stringify({ action:'saveKOL', ...submittedData }) }); }
+    catch(e){}
+  }
+  document.getElementById('formWrapper').style.display='none';
+  document.getElementById('successBox').classList.add('show');
+  document.getElementById('successDesc').textContent = `Halo ${submittedData.namaKOL}! Brief kerjasama dengan ${BRAND} cabang ${CABANG} siap diunduh.`;
+}
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const cfg = briefConfig || defaultConfig;
+  const data = submittedData;
+  const W = 210, margin = 18;
+  let y = 0;
+
+  doc.setFillColor(26, 71, 49);
+  doc.rect(0, 0, W, 45, 'F');
+
+  if (cfg.logo && cfg.logo.startsWith('data:image')) {
+    try { doc.addImage(cfg.logo, 'PNG', W/2-15, 5, 30, 20, undefined, 'FAST'); y = 27; }
+    catch(e) { y = 12; }
+  } else { y = 12; }
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(240,192,64);
+  doc.text(BRAND, W/2, y+8, {align:'center'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,220,200);
+  doc.text('BRIEF KERJASAMA KOL · ' + CABANG, W/2, y+15, {align:'center'});
+
+  y = 52;
+  doc.setFillColor(240, 255, 248);
+  doc.roundedRect(margin, y, W-margin*2, 30, 3, 3, 'F');
+  doc.setFontSize(8); doc.setTextColor(30,80,50);
+  doc.text('INFORMASI KOL', margin+5, y+7);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(10,30,20);
+  const tgl = data.tanggalVisit ? new Date(data.tanggalVisit).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+  doc.text(`Nama KOL         : ${data.namaKOL}`, margin+5, y+15);
+  doc.text(`Cabang            : ${CABANG}`, margin+5, y+22);
+  doc.text(`Tanggal Kunjungan : ${tgl}`, margin+5, y+29);
+  if (cfg.deadline) { doc.setTextColor(180,0,0); doc.text(`Deadline : ${cfg.deadline}`, W/2, y+22); }
+  y += 38;
+
+  if (cfg.paragrafUtama) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(26,71,49);
+    doc.text('GARIS BESAR TEMA', margin, y); y += 5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(10,30,20);
+    const l = doc.splitTextToSize(cfg.paragrafUtama, W-margin*2);
+    doc.text(l, margin, y); y += l.length*5+4;
+    if (cfg.paragrafTambahan) { const l2 = doc.splitTextToSize(cfg.paragrafTambahan, W-margin*2); doc.text(l2, margin, y); y += l2.length*5+4; }
+  }
+
+  if (cfg.catatanFormat) {
+    doc.setFillColor(240,255,240);
+    const cl = doc.splitTextToSize(cfg.catatanFormat, W-margin*2-10);
+    doc.roundedRect(margin, y, W-margin*2, cl.length*5+10, 2, 2, 'F');
+    doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(30,80,50);
+    doc.text(cl, margin+5, y+6); y += cl.length*5+16;
+  }
+
+  const colW = (W-margin*2-8)/2;
+  doc.setFillColor(230,245,230); doc.roundedRect(margin, y, colW, 8, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(20,100,20);
+  doc.text('✓ DOS', margin+4, y+5.5); y += 10;
+  doc.setFont('helvetica','normal'); doc.setTextColor(30,80,30);
+  (cfg.dos||[]).forEach(d => { if(d){ const l=doc.splitTextToSize('• '+d, colW-6); doc.text(l, margin+3, y); y+=l.length*4.5; } });
+
+  y += 5;
+  doc.setFillColor(245,230,230); doc.roundedRect(margin, y, colW, 8, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(150,20,20);
+  doc.text("✕ DON'TS", margin+4, y+5.5); y += 10;
+  doc.setFont('helvetica','normal'); doc.setTextColor(100,20,20);
+  (cfg.donts||[]).forEach(d => { if(d){ const l=doc.splitTextToSize('• '+d, colW-6); doc.text(l, margin+3, y); y+=l.length*4.5; } });
+
+  doc.setFillColor(26, 71, 49);
+  doc.rect(0, 280, W, 17, 'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(240,192,64);
+  doc.text(`${BRAND} · Terima kasih telah bergabung bersama kami!`, W/2, 290, {align:'center'});
+
+  doc.save(`Brief_KOL_${BRAND.replace(/ /g,'_')}_${data.namaKOL.replace(/ /g,'_')}.pdf`);
+  showToast('📄 Brief berhasil diunduh!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

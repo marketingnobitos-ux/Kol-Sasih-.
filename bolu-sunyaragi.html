@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form KOL — Bolu Sunyaragi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --utama:#6B3A1F; --aksen:#E8B87A; --bg:#1a0f05; --surface:#221508; --border:#3d2810; --text:#f5eee6; --muted:#9a8070; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .hero { background:linear-gradient(135deg, var(--utama) 0%, #3d2010 100%); padding:2rem 1.5rem; text-align:center; }
+  .hero-brand { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--aksen); margin-bottom:0.2rem; }
+  .hero-sub { font-size:0.78rem; color:rgba(255,255,255,0.7); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:1rem; }
+  .hero-desc { font-size:0.88rem; color:rgba(255,255,255,0.85); line-height:1.6; max-width:340px; margin:0 auto; }
+  .container { max-width:520px; margin:0 auto; padding:1.2rem; }
+  .section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.2rem; margin-bottom:1rem; }
+  .section-title { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--aksen); margin-bottom:0.9rem; padding-bottom:0.4rem; border-bottom:1px solid var(--border); }
+  .field { margin-bottom:0.9rem; }
+  .field label { display:block; font-size:0.78rem; color:var(--muted); margin-bottom:0.35rem; }
+  input[type=text], input[type=tel], input[type=date], input[type=url], select {
+    background:#150a03; border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:0.6rem 0.9rem; font-family:'DM Sans',sans-serif; font-size:0.9rem; width:100%; outline:none; transition:border 0.2s;
+  }
+  input:focus, select:focus { border-color:var(--aksen); }
+  select { appearance:none; cursor:pointer; }
+  .btn { display:flex; align-items:center; gap:0.5rem; justify-content:center; border:none; border-radius:10px; padding:0.9rem 1.4rem; font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.2s; width:100%; }
+  .btn-submit { background:var(--utama); color:#fff; border:2px solid var(--aksen); }
+  .btn-submit:hover { background:#7d4525; }
+  .btn-submit:disabled { opacity:0.5; cursor:not-allowed; }
+  .btn-pdf { background:var(--aksen); color:#1a0f05; margin-top:0.7rem; }
+  .success-box { display:none; background:rgba(107,58,31,0.3); border:1px solid var(--aksen); border-radius:12px; padding:1.5rem; text-align:center; margin-top:1rem; }
+  .success-box.show { display:block; }
+  .success-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+  .success-title { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--aksen); margin-bottom:0.5rem; }
+  .success-desc { font-size:0.85rem; color:var(--muted); line-height:1.6; }
+  .toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid var(--aksen); color:var(--text); padding:0.8rem 1.5rem; border-radius:10px; font-size:0.85rem; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:999; }
+  .toast.show { opacity:1; }
+  .required::after { content:' *'; color:var(--aksen); }
+  .err { border-color:#e57373 !important; }
+  .err-msg { font-size:0.72rem; color:#e57373; margin-top:0.2rem; display:none; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-brand">Bolu Sunyaragi</div>
+  <div class="hero-sub">Form Kerjasama KOL</div>
+  <div class="hero-desc">Halo! Terima kasih telah bergabung bersama kami. Lengkapi data di bawah untuk mendapatkan brief kerjasama.</div>
+</div>
+
+<div class="container">
+  <div id="formWrapper">
+    <div class="section">
+      <div class="section-title">Pilih Cabang</div>
+      <div class="field">
+        <label class="required">Cabang</label>
+        <select id="selCabang" onchange="onCabangChange()">
+          <option value="">— Pilih Cabang —</option>
+          <option value="Kartini">Kartini</option>
+          <option value="Kemlaka">Kemlaka</option>
+        </select>
+        <div class="err-msg" id="errCabang">Pilih cabang terlebih dahulu</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Data Diri</div>
+      <div class="field">
+        <label class="required">Nama Lengkap</label>
+        <input type="text" id="fNama" placeholder="Nama lengkap Anda...">
+        <div class="err-msg" id="errNama">Nama wajib diisi</div>
+      </div>
+      <div class="field">
+        <label class="required">No. WhatsApp</label>
+        <input type="tel" id="fWA" placeholder="08xx-xxxx-xxxx">
+        <div class="err-msg" id="errWA">No. WA wajib diisi</div>
+      </div>
+      <div class="field">
+        <label class="required">Tanggal Kunjungan ke Outlet</label>
+        <input type="date" id="fTglVisit">
+        <div class="err-msg" id="errTgl">Tanggal kunjungan wajib diisi</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Akun Sosial Media</div>
+      <div class="field"><label>Username Instagram</label><input type="text" id="fUsernameIG" placeholder="@username_anda"></div>
+      <div class="field"><label>Link Profil Instagram</label><input type="url" id="fLinkIG" placeholder="https://instagram.com/username"></div>
+      <div class="field"><label>Username TikTok</label><input type="text" id="fUsernameTT" placeholder="@username_tiktok"></div>
+      <div class="field"><label>Link Profil TikTok</label><input type="url" id="fLinkTT" placeholder="https://tiktok.com/@username"></div>
+    </div>
+
+    <button class="btn btn-submit" id="btnSubmit" onclick="submitForm()">✨ Submit & Download Brief</button>
+  </div>
+
+  <div class="success-box" id="successBox">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Pendaftaran Berhasil!</div>
+    <div class="success-desc" id="successDesc">Data Anda telah kami terima.</div>
+    <button class="btn btn-pdf" onclick="downloadPDF()">📄 Download Brief PDF</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const APPS_SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+const BRAND = 'Bolu Sunyaragi';
+
+let briefConfig = null;
+let submittedData = null;
+
+const defaultConfig = {
+  warnaUtama:'#6B3A1F', warnaAksen:'#E8B87A', warnaBackground:'#fff9f0',
+  paragrafUtama:'Bolu Sunyaragi menghadirkan kue bolu premium dengan resep turun-temurun yang lezat dan autentik.',
+  dos:['Tampilkan produk dengan pencahayaan yang baik','Sebutkan nama brand dengan jelas','Ceritakan pengalaman menikmati produk'],
+  donts:['Jangan bandingkan dengan produk lain','Jangan gunakan musik berlisensi tanpa izin','Posting sesuai kesepakatan'],
+  catatanFormat:'Format konten bebas sesuai gaya kreator, yang penting produk terlihat jelas.',
+  logo:'', deadline:''
+};
+
+async function onCabangChange() {
+  const cabang = document.getElementById('selCabang').value;
+  if (!cabang || APPS_SCRIPT_URL === 'PASTE_APPS_SCRIPT_URL_HERE') { briefConfig = defaultConfig; return; }
+  try {
+    const r = await fetch(`${APPS_SCRIPT_URL}?action=getBriefConfig&brand=${encodeURIComponent(BRAND)}&cabang=${encodeURIComponent(cabang)}`);
+    const d = await r.json();
+    briefConfig = d.config || defaultConfig;
+  } catch(e) { briefConfig = defaultConfig; }
+}
+
+function validate() {
+  let ok = true;
+  [['selCabang','errCabang'],['fNama','errNama'],['fWA','errWA'],['fTglVisit','errTgl']].forEach(([id,errId]) => {
+    const el = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!el.value) { el.classList.add('err'); err.style.display='block'; ok=false; }
+    else { el.classList.remove('err'); err.style.display='none'; }
+  });
+  return ok;
+}
+
+async function submitForm() {
+  if (!validate()) return;
+  const cabang = document.getElementById('selCabang').value;
+  submittedData = {
+    brand:BRAND, cabang,
+    namaKOL: document.getElementById('fNama').value,
+    noWA: document.getElementById('fWA').value,
+    usernameIG: document.getElementById('fUsernameIG').value,
+    linkIG: document.getElementById('fLinkIG').value,
+    usernameTT: document.getElementById('fUsernameTT').value,
+    linkTT: document.getElementById('fLinkTT').value,
+    tanggalVisit: document.getElementById('fTglVisit').value
+  };
+  if (!briefConfig) await onCabangChange();
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled=true; btn.textContent='⏳ Memproses...';
+  if (APPS_SCRIPT_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+    try { await fetch(APPS_SCRIPT_URL, { method:'POST', body:JSON.stringify({ action:'saveKOL', ...submittedData }) }); }
+    catch(e){}
+  }
+  document.getElementById('formWrapper').style.display='none';
+  document.getElementById('successBox').classList.add('show');
+  document.getElementById('successDesc').textContent = `Halo ${submittedData.namaKOL}! Brief kerjasama dengan ${BRAND} cabang ${cabang} siap diunduh.`;
+}
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const cfg = briefConfig || defaultConfig;
+  const data = submittedData;
+  const W = 210, margin = 18;
+  let y = 0;
+
+  // Header - coklat
+  doc.setFillColor(107, 58, 31);
+  doc.rect(0, 0, W, 45, 'F');
+
+  if (cfg.logo && cfg.logo.startsWith('data:image')) {
+    try { doc.addImage(cfg.logo, 'PNG', W/2-15, 5, 30, 20, undefined, 'FAST'); y = 27; }
+    catch(e) { y = 12; }
+  } else { y = 12; }
+
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.setTextColor(232, 184, 122);
+  doc.text(BRAND, W/2, y+8, {align:'center'});
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(220,200,180);
+  doc.text('BRIEF KERJASAMA KOL · ' + data.cabang, W/2, y+15, {align:'center'});
+
+  y = 52;
+  doc.setFillColor(255, 248, 240);
+  doc.roundedRect(margin, y, W-margin*2, 30, 3, 3, 'F');
+  doc.setFontSize(8); doc.setTextColor(100,60,30);
+  doc.text('INFORMASI KOL', margin+5, y+7);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(40,20,10);
+  const tgl = data.tanggalVisit ? new Date(data.tanggalVisit).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+  doc.text(`Nama KOL         : ${data.namaKOL}`, margin+5, y+15);
+  doc.text(`Cabang            : ${data.cabang}`, margin+5, y+22);
+  doc.text(`Tanggal Kunjungan : ${tgl}`, margin+5, y+29);
+  if (cfg.deadline) { doc.setTextColor(180,0,0); doc.text(`Deadline : ${cfg.deadline}`, W/2, y+22); }
+  y += 38;
+
+  if (cfg.paragrafUtama) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(107,58,31);
+    doc.text('GARIS BESAR TEMA', margin, y); y += 5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(40,20,10);
+    const l = doc.splitTextToSize(cfg.paragrafUtama, W-margin*2);
+    doc.text(l, margin, y); y += l.length*5+4;
+    if (cfg.paragrafTambahan) { const l2 = doc.splitTextToSize(cfg.paragrafTambahan, W-margin*2); doc.text(l2, margin, y); y += l2.length*5+4; }
+  }
+
+  if (cfg.catatanFormat) {
+    doc.setFillColor(255,245,230);
+    const cl = doc.splitTextToSize(cfg.catatanFormat, W-margin*2-10);
+    doc.roundedRect(margin, y, W-margin*2, cl.length*5+10, 2, 2, 'F');
+    doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(100,70,30);
+    doc.text(cl, margin+5, y+6); y += cl.length*5+16;
+  }
+
+  const colW = (W-margin*2-8)/2;
+  doc.setFillColor(230,245,230); doc.roundedRect(margin, y, colW, 8, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(20,100,20);
+  doc.text('✓ DOS', margin+4, y+5.5); y += 10;
+  doc.setFont('helvetica','normal'); doc.setTextColor(30,80,30);
+  (cfg.dos||[]).forEach(d => { if(d){ const l=doc.splitTextToSize('• '+d, colW-6); doc.text(l, margin+3, y); y+=l.length*4.5; } });
+
+  y += 5;
+  doc.setFillColor(245,230,230); doc.roundedRect(margin, y, colW, 8, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(150,20,20);
+  doc.text("✕ DON'TS", margin+4, y+5.5); y += 10;
+  doc.setFont('helvetica','normal'); doc.setTextColor(100,20,20);
+  (cfg.donts||[]).forEach(d => { if(d){ const l=doc.splitTextToSize('• '+d, colW-6); doc.text(l, margin+3, y); y+=l.length*4.5; } });
+
+  doc.setFillColor(107, 58, 31);
+  doc.rect(0, 280, W, 17, 'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(232,184,122);
+  doc.text(`${BRAND} · Terima kasih telah bergabung bersama kami!`, W/2, 290, {align:'center'});
+
+  doc.save(`Brief_KOL_${BRAND.replace(/ /g,'_')}_${data.namaKOL.replace(/ /g,'_')}.pdf`);
+  showToast('📄 Brief berhasil diunduh!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

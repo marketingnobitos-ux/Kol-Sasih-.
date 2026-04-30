@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem KOL — Sasih</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg      : #0b1a13;
+    --surface : #122010;
+    --border  : #1e3828;
+    --gold    : #c9a84c;
+    --gold-lt : #e8cc7a;
+    --text    : #e8e4dc;
+    --muted   : #7a8c80;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    text-align: center;
+    margin-bottom: 0.3rem;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 400px) { .card-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1rem;
+    text-decoration: none;
+    color: var(--text);
+    text-align: center;
+    transition: all 0.25s ease;
+    display: block;
+  }
+
+  .card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.15);
+  }
+
+  .card-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+  .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .card-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+  .divider {
+    width: 100%;
+    max-width: 480px;
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0.5rem 0 1.2rem;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 0.8rem;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .kol-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .kol-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+
+  .kol-btn:hover { border-color: var(--gold); background: var(--border); }
+  .kol-btn span.label { flex: 1; }
+  .kol-btn .arrow { color: var(--muted); font-size: 0.75rem; }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red   { background: #c0392b; }
+  .dot-brown { background: #8B5E3C; }
+  .dot-green { background: #1a6b3c; }
+
+  .footer {
+    margin-top: 2.5rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo">Sasih</div>
+<div class="subtitle">Sistem Manajemen KOL</div>
+
+<!-- Panel Sasih -->
+<div class="card-grid">
+  <a href="admin.html" class="card">
+    <div class="card-icon">⚙️</div>
+    <div class="card-title">Admin Panel</div>
+    <div class="card-desc">Setup brief, tema campaign & konfigurasi</div>
+  </a>
+  <a href="input.html" class="card">
+    <div class="card-icon">📊</div>
+    <div class="card-title">Input Data</div>
+    <div class="card-desc">Catat metrik bulanan KOL</div>
+  </a>
+</div>
+
+<a href="dashboard.html" class="card" style="max-width:480px;width:100%;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;">
+  <span style="font-size:1.5rem;">📈</span>
+  <div style="text-align:left;">
+    <div class="card-title" style="text-align:left">Dashboard</div>
+    <div class="card-desc" style="text-align:left">Performa cabang, top KOL & tren ER</div>
+  </div>
+  <span style="margin-left:auto;color:var(--muted);">→</span>
+</a>
+
+<hr class="divider">
+<div class="section-label">🔗 Link Form KOL — kirim ke influencer</div>
+
+<div class="kol-links">
+  <a href="pecel-lele.html" class="kol-btn">
+    <span class="dot dot-red"></span>
+    <span class="label">Form KOL — Pecel Lele Aminoto</span>
+    <span class="arrow">→</span>
+  </a>
+  <a href="bolu-sunyaragi.html" class="kol-btn">
+    <span class="dot dot-brown"></span>
+    <span class="label">Form KOL — Bolu Sunyaragi</span>
+    <span class="arrow">→</span>
+  </a>
+  <a href="bakmi-jowo.html" class="kol-btn">
+    <span class="dot dot-green"></span>
+    <span class="label">Form KOL — Bakmi Jowo</span>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<div class="footer">Sistem KOL Sasih &copy; 2025 · Semua data tersimpan di Google Sheet Anda</div>
+
+</body>
+</html>
